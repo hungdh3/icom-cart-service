@@ -28,4 +28,14 @@ public class CartEntity {
 
     @Column(name = "updated_at")
     private Instant updatedAt;
+
+    private static boolean containField(String fieldName) {
+        //allows some of field sorted
+        return CartEntity_.CREATED_AT.equalsIgnoreCase(fieldName);
+    }
+
+    public static String getSearchField(String fieldName) {
+        //use default search key if input search key is not valid
+        return containField(fieldName) ? fieldName : CartEntity_.CREATED_AT;
+    }
 }
