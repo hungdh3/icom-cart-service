@@ -1,0 +1,29 @@
+server:
+  port: 8002
+  servlet:
+    context-path: /
+spring:
+  application:
+    name: icom-product-service
+    version: 0.1
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/cartdb
+    username: admin
+    password: admin
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    open-in-view: false
+    generate-ddl: true
+  liquibase:
+    enabled: true
+liquibase:
+  change-log: classpath:/db/changelog/db.changelog-master.yaml
+  contexts: dev
+  dropFirst: false
+springdoc:
+  packagesToScan: com.icom
