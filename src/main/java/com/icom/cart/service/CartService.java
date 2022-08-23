@@ -106,6 +106,7 @@ public class CartService {
         ItemCreatedEventEntity itemCreatedEventEntity = itemCreatedEventService.creatEvent(itemEntity);
 
         try {
+            log.info("Publish item created event: " + JsonUtil.objectToString(itemEntity));
             itemCreatedKafkaProducer.sendMessage(
                     JsonUtil.objectToString(itemEntity),
                     itemEntity.getItemRef().toString()); //use item_ref to routing to the same partition.

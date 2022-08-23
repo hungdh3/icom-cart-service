@@ -52,7 +52,7 @@ CREATE TABLE ITEM_CREATED_EVENT
 (
     ITEM_CREATED_EVENT_ID           uuid PRIMARY KEY default uuid_generate_v4(),
     ITEM_CREATED_EVENT_HASH_CONTENT varchar(255),
-    ITEM_CREATED_EVENT_CONTENT      varchar(255),
+    ITEM_CREATED_EVENT_CONTENT      varchar(4086),
     ITEM_ID                         uuid, -- for partition & routing
     TRANSACTION_ID                  uuid NOT NULL,
     SENT                            boolean,
