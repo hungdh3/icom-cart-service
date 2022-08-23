@@ -6,6 +6,7 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Getter
@@ -23,14 +24,17 @@ public class CartItemEntity {
     @JoinColumn(name = "cart_id", nullable = false)
     private CartEntity cart;
 
+    @Column(name = "transaction_id", nullable = false)
+    private UUID transactionId;
+
     @ManyToOne(optional = false)
     @JoinColumn(name = "item_id", nullable = false)
     private ItemEntity item;
 
     @Column(name = "created_at")
-    private Instant createdAt;
+    private LocalDateTime createdAt;
 
     @Column(name = "updated_at")
-    private Instant updatedAt;
+    private LocalDateTime updatedAt;
 
 }

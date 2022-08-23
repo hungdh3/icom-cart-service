@@ -6,6 +6,7 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Getter
@@ -28,12 +29,15 @@ public class ItemCreatedEventEntity {
     @Column(name = "item_id")
     private UUID itemId;
 
-    @Column(name = "transaction_id", length = 64)
-    private String transactionId;
+    @Column(name = "transaction_id")
+    private UUID transactionId;
 
     @Column(name = "sent")
     private Boolean sent;
 
+    @Column(name = "retry_times")
+    private Boolean retryTimes;
+
     @Column(name = "created_at")
-    private Instant createdAt;
+    private LocalDateTime createdAt;
 }

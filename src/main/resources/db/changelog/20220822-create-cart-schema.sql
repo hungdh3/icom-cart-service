@@ -5,7 +5,7 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 CREATE TABLE CUSTOMER
 (
     CUSTOMER_ID     uuid PRIMARY KEY default uuid_generate_v4(),
-    CUSTOMER_EMAIL  varchar(255),
+    CUSTOMER_EMAIL  varchar(255) unique,
     CUSTOMER_STATUS varchar(10),
     CREATED_AT      timestamp,
     UPDATED_AT      timestamp
@@ -13,12 +13,13 @@ CREATE TABLE CUSTOMER
 
 CREATE TABLE ITEM
 (
-    ITEM_ID          uuid PRIMARY KEY default uuid_generate_v4(),
-    ITEM_REF         uuid NOT NULL,
-    ITEM_QUALITY     integer,
-    ITEM_DESCRIPTION json NOT null,
-    CREATED_AT       timestamp,
-    UPDATED_AT       timestamp
+    ITEM_ID            uuid PRIMARY KEY default uuid_generate_v4(),
+    ITEM_REF           uuid        NOT NULL,
+    ITEM_QUALITY       integer CHECK (ITEM_QUALITY > 0),
+    TRANSACTION_ID     uuid        NOT NULL UNIQUE,
+    TRANSACTION_STATUS varchar(32) NOT NULL,
+    CREATED_AT         timestamp,
+    UPDATED_AT         timestamp
 );
 CREATE TABLE CART
 (
@@ -32,11 +33,12 @@ CREATE TABLE CART
 );
 CREATE TABLE CART_ITEM
 (
-    CART_ITEM_ID uuid PRIMARY KEY default uuid_generate_v4(),
-    CART_ID      uuid NOT NULL,
-    ITEM_ID      uuid NOT NULL,
-    CREATED_AT   timestamp,
-    UPDATED_AT   timestamp,
+    CART_ITEM_ID   uuid PRIMARY KEY default uuid_generate_v4(),
+    CART_ID        uuid NOT NULL,
+    ITEM_ID        uuid NOT NULL,
+    TRANSACTION_ID uuid NOT NULL,
+    CREATED_AT     timestamp,
+    UPDATED_AT     timestamp,
 
     CONSTRAINT CART_ID_REF FOREIGN KEY (CART_ID)
         REFERENCES CART (CART_ID),
@@ -49,13 +51,14 @@ CREATE TABLE CART_ITEM
 CREATE TABLE ITEM_CREATED_EVENT
 (
     ITEM_CREATED_EVENT_ID           uuid PRIMARY KEY default uuid_generate_v4(),
-
     ITEM_CREATED_EVENT_HASH_CONTENT varchar(255),
     ITEM_CREATED_EVENT_CONTENT      varchar(255),
-    ITEM_ID                         uuid,        -- for partition & routing
-    TRANSACTION_ID                  varchar(64), -- sha256
+    ITEM_ID                         uuid, -- for partition & routing
+    TRANSACTION_ID                  uuid NOT NULL,
     SENT                            boolean,
-    CREATED_AT                      timestamp
+    RETRY_TIMES                     integer default 0,
+    CREATED_AT                      timestamp,
+    UNIQUE (ITEM_CREATED_EVENT_HASH_CONTENT, TRANSACTION_ID)
 );
 
 -- rollback drop table person;

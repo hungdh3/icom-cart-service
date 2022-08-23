@@ -1,11 +1,16 @@
 package com.icom.cart.entity;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-import java.time.Instant;
+import javax.validation.constraints.Min;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
+@Getter
+@Setter
 @Table(name = "item")
 @Entity
 public class ItemEntity {
@@ -18,52 +23,20 @@ public class ItemEntity {
     @Column(name = "item_ref", nullable = false)
     private UUID itemRef;
 
+    @Column(name = "transaction_id", nullable = false)
+    private UUID transactionId;
+
     @Column(name = "item_quality")
+    @Min(value = 0, message = "The itemQuality must be positive")
     private Integer itemQuality;
 
+    @Column(name = "transaction_status")
+    private String transactionStatus;
+
     @Column(name = "created_at")
-    private Instant createdAt;
+    private LocalDateTime createdAt;
 
     @Column(name = "updated_at")
-    private Instant updatedAt;
+    private LocalDateTime updatedAt;
 
-    public Instant getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(Instant updatedAt) {
-        this.updatedAt = updatedAt;
-    }
-
-    public Instant getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(Instant createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public Integer getItemQuality() {
-        return itemQuality;
-    }
-
-    public void setItemQuality(Integer itemQuality) {
-        this.itemQuality = itemQuality;
-    }
-
-    public UUID getItemRef() {
-        return itemRef;
-    }
-
-    public void setItemRef(UUID itemRef) {
-        this.itemRef = itemRef;
-    }
-
-    public UUID getId() {
-        return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
-    }
 }

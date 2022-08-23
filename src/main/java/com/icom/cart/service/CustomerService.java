@@ -12,6 +12,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+import java.util.UUID;
+
 @Slf4j
 @Service
 public class CustomerService {
@@ -27,5 +30,10 @@ public class CustomerService {
                 pageInfo.getElementPerPage(),
                 plantSort);
         return customerEntityRepository.findAll(page);
+    }
+
+    public Optional<CustomerEntity> customerFromUuidStr(String uuidStr) {
+        UUID uuid = UUID.fromString(uuidStr);
+        return customerEntityRepository.findById(uuid);
     }
 }
