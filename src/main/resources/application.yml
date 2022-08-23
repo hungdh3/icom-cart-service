@@ -21,9 +21,20 @@ spring:
     generate-ddl: true
   liquibase:
     enabled: true
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: ICOMMERCE_ONLINE_PROCESSING
 liquibase:
   change-log: classpath:/db/changelog/db.changelog-master.yaml
   contexts: dev
   dropFirst: false
 springdoc:
   packagesToScan: com.icom
+icom:
+  cart:
+    item-created-topic:
+      name: ITEM_CREATED_TOPIC
+      partitions: 3
+      replicas: 1
+      short-timeout-ms: 300
