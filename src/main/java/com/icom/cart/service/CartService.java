@@ -2,12 +2,14 @@ package com.icom.cart.service;
 
 import com.icom.cart.entity.*;
 import com.icom.cart.exception.CartNotFoundException;
+import com.icom.cart.kafka.ItemCreatedKafkaProducer;
 import com.icom.cart.model.ItemToCart;
 import com.icom.cart.model.PageInfo;
 import com.icom.cart.repository.CartEntityRepository;
 import com.icom.cart.repository.CartItemEntityRepository;
 import com.icom.cart.repository.CartItemEntitySpecification;
 import com.icom.cart.repository.ItemEntityRepository;
+import com.icom.cart.util.JsonUtil;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,11 +25,15 @@ import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
 
 @Slf4j
 @Service
 public class CartService {
 
+    @Autowired
+    private ItemCreatedKafkaProducer itemCreatedKafkaProducer;
     @Autowired
     private CartEntityRepository cartEntityRepository;
     @Autowired
@@ -97,6 +103,19 @@ public class CartService {
         cartItemEntity.setCreatedAt(now);
         cartItemEntityRepository.save(cartItemEntity);
 
-        itemCreatedEventService.creatEvent(itemEntity);
+        ItemCreatedEventEntity itemCreatedEventEntity = itemCreatedEventService.creatEvent(itemEntity);
+
+        try {
+            itemCreatedKafkaProducer.sendMessage(
+                    JsonUtil.objectToString(itemEntity),
+                    itemEntity.getItemRef().toString()); //use item_ref to routing to the same partition.
+            itemCreatedEventEntity.setSent(true);
+        } catch (ExecutionException | InterruptedException | TimeoutException e) {
+            e.printStackTrace();
+            itemCreatedEventEntity.setSent(false);
+            itemCreatedEventEntity.setRetryTimes(itemCreatedEventEntity.getRetryTimes() + 1);
+            //Note: these exceptions won't cause the database transaction to rollback.
+        }
+        itemCreatedEventService.updateEventSent(itemCreatedEventEntity);
     }
 }

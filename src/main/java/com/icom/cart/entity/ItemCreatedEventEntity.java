@@ -36,7 +36,7 @@ public class ItemCreatedEventEntity {
     private Boolean sent;
 
     @Column(name = "retry_times")
-    private Boolean retryTimes;
+    private Integer retryTimes;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
