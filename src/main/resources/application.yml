@@ -34,7 +34,7 @@ springdoc:
 icom:
   cart:
     item-created-topic:
-      name: ITEM_CREATED_TOPIC
+      name: ITEM_CREATED_TOPIC5
       partitions: 3
       replicas: 1
       short-timeout-ms: 300
