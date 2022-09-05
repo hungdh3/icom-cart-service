@@ -19,8 +19,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
+//import javax.transaction.Transactional;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -43,6 +45,7 @@ public class CartService {
     @Autowired
     private ItemCreatedEventService itemCreatedEventService;
 
+    @Transactional(isolation = Isolation.SERIALIZABLE)
     public Page<CartEntity> getCarts(@NonNull PageInfo pageInfo) {
         //handle the case request inputs wrong sort-key
         String searchKey = CartEntity.getSearchField(pageInfo.getKey());

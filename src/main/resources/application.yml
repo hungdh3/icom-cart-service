@@ -38,3 +38,8 @@ icom:
       partitions: 3
       replicas: 1
       short-timeout-ms: 300
+
+logging.level.ROOT: INFO
+logging.level.org.springframework.orm.jpa: DEBUG
+logging.level.org.springframework.transaction: DEBUG
+logging.level.org.hibernate.engine.transaction.internal.TransactionImpl: DEBUG
